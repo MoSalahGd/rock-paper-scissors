@@ -4,9 +4,10 @@ function random() {
 }
 //2- create computerPlay() function that will randomly return either ‘Rock’, ‘Paper’ or ‘scissors’
 function computerPlay() {
-  if (random() === 1) {
+  let randomNum = random();
+  if (randomNum === 1) {
     return 'rock';
-  } else if (random() === 2) {
+  } else if (randomNum === 2) {
     return 'paper';
   } else {
     return 'scissors';
@@ -24,7 +25,6 @@ function playerChoice() {
     answer = prompt(`Choose 'rock' | 'paper' | 'scissors'`);
     if (answer === null || answer === undefined) {
       checkString = false;
-      alert("Game Ended!");
     } else if (answer.toLowerCase() === 'rock' || answer.toLowerCase() === 'paper' || answer.toLowerCase() === 'scissors') {
       checkString = false;
       return answer.toLowerCase();
@@ -67,28 +67,58 @@ function playRound(playerSelection, computerSelection) {
 
 //function game() loops the playRound() function and keep scores for the computer and the player until either the player or the computer reach a score of 5. 
 function game() {
-  let playerScore = 0, computerScore = 0;
-  while (playerScore !== 5 && computerScore !== 5) {
-    let computerSelection = computerPlay();
-    let playerSelection = playerChoice();
-    console.log(playRound(playerSelection, computerSelection))
-    if (playRound(playerSelection, computerSelection).includes('Win')) {
-      ++playerScore;
-      console.log(`playerScore: ${playerScore}`);
-      console.log(`computerScore: ${computerScore}`);
-      console.log("========================")
-    } else if (playRound(playerSelection, computerSelection).includes('Lose')) {
-      ++computerScore
-      console.log(`playerScore: ${playerScore}`);
-      console.log(`computerScore: ${computerScore}`);
-      console.log("========================")
+  let score = [0,0];
+  while (score[0] !== 5 && score[1] !== 5) {
+    let resultMessage = playRound(playerChoice(), computerPlay());
+    if(resultMessage === undefined) {
+      break;
+    } else {
+      roundWinner(resultMessage,score);
     }
   }
+  checkWinner(score);
+}
 
-  if (playerScore === 5) {
-    console.log(`%c Nice! You Win the game`, `font-size: 30px; color: green;`)
+
+//function to add score
+function roundWinner(resultMessage,score){
+  if (resultMessage.includes('Win')) {
+    ++score[0];
+    console.log(`%c ${resultMessage}`, `color: green;`);
+    console.log(`%c playerScore: ${score[0]}`,`color: green;`);
+    console.log(`%c computerScore: ${score[1]}`, `color: red`);
+    console.log("%c ========================", `color: gray;`)
+  } else if (resultMessage.includes('Lose')) {
+    ++score[1];
+    console.log(`%c ${resultMessage}`, `color: red;`);
+    console.log(`%c playerScore: ${score[0]}`,`color: green;`);
+    console.log(`%c computerScore: ${score[1]}`, `color: red`);
+    console.log("%c ========================", `color: gray;`)
   } else {
-    console.log("%c Game Over! Better luck next time", `font-size: 30px; color: red;`)
+    console.log(`%c ${resultMessage}`, `color: white;`);
+    console.log(`%c playerScore: ${score[0]}`,`color: green;`);
+    console.log(`%c computerScore: ${score[1]}`, `color: red`);
+    console.log("%c ========================", `color: gray;`)
+  }
+}
+
+// a function to show the winner a custom colorful text of the game according to the score.
+function checkWinner(score) {
+  if (score[0] === 5) {
+    console.log(`%c =====================================`, `color: green;`);
+    console.log(`%c Nice! You Win the game`, `color: green;`)
+    console.log(`%c =====================================`, `color: green;`);
+  } else if (score[1] === 5) {
+    console.log(`%c =====================================`, `color: red;`);
+    console.log("%c Game Over! Better luck next time", `color: red;`)
+    console.log(`%c =====================================`, `color: red;`);
+  } else {
+    console.log(`%c =====================================`, `color: yellow;`);
+    console.log("%c you quit the game!", `color: yellow;`);
+    console.log(`%c Your final score was: ${score[0]}`, `color: yellow;`);
+    console.log(`%c Computer final score was: ${score[1]}`, `color: yellow;`)
+    console.log(`%c Reload the page to start a new game.`, `color: yellow;`)
+    console.log(`%c =====================================`, `color: yellow;`);
   }
 }
 
